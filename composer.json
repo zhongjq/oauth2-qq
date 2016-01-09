@@ -1,5 +1,5 @@
 {
-    "name": "league/oauth2-qq",
+    "name": "lazyboywu/oauth2-qq",
     "description": "Qq OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
     "license": "MIT",
     "authors": [
