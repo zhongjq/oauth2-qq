@@ -77,6 +77,16 @@ class QqResourceOwner implements ResourceOwnerInterface
     }
 
     /**
+     * Get resource owner figure url
+     *
+     * @return string|null
+     */
+    public function getFigureUrl()
+    {
+        return $this->response['figureurl'] ?: null;
+    }
+
+    /**
      * Set resource owner OpenID
      *
      * @param  string $openId

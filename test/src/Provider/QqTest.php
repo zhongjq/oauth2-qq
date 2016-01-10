@@ -2,7 +2,7 @@
 
 use Mockery as m;
 
-class GithubTest extends \PHPUnit_Framework_TestCase
+class QqTest extends \PHPUnit_Framework_TestCase
 {
     protected $provider;
 
@@ -181,7 +181,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $mockUserBody = array(
             'ret' => 0,
             'msg' => '',
-            'nickname' => uniqid()
+            'nickname' => uniqid(),
+            'figureurl' => uniqid()
         );
 
         $postResponse = $this->makeMockResponse(
@@ -215,6 +216,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($mockOpenIdBody['openid'], $user->toArray()['openid']);
         $this->assertEquals($mockUserBody['nickname'], $user->getNickname());
         $this->assertEquals($mockUserBody['nickname'], $user->toArray()['nickname']);
+        $this->assertEquals($mockUserBody['figureurl'], $user->getFigureUrl());
+        $this->assertEquals($mockUserBody['figureurl'], $user->toArray()['figureurl']);
     }
 
     /**
