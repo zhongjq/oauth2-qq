@@ -33,7 +33,7 @@ class QqResourceOwner implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->response['id'] ?: null;
+        return null;
     }
 
     /**
@@ -43,7 +43,7 @@ class QqResourceOwner implements ResourceOwnerInterface
      */
     public function getEmail()
     {
-        return $this->response['email'] ?: null;
+        return null;
     }
 
     /**
@@ -53,7 +53,7 @@ class QqResourceOwner implements ResourceOwnerInterface
      */
     public function getName()
     {
-        return $this->response['name'] ?: null;
+        return null;
     }
 
     /**

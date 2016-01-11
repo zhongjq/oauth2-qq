@@ -58,13 +58,17 @@ class QqTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "scope":"repo,gist", "token_type":"bearer"}');
-        $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
-        $response->shouldReceive('getStatusCode')->andReturn(200);
+        
+        $mockBody = 'access_token=mock_access_token&otherKey={1234}';
+
+        $postResponse = $this->makeMockResponse(
+            $mockBody,
+            ['content-type' => 'text/html'],
+            200
+        );
 
         $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')->times(1)->andReturn($response);
+        $client->shouldReceive('send')->times(1)->andReturn($postResponse);
 
         $this->provider->setHttpClient($client);
 
@@ -86,13 +90,13 @@ class QqTest extends \PHPUnit_Framework_TestCase
 
         $postResponse = $this->makeMockResponse(
             'access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey={1234}',
-            ['content-type' => 'application/x-www-form-urlencoded'],
+            ['content-type' => 'text/html'],
             200
         );
 
         $openIdResponse = $this->makeMockResponse(
-            json_encode($mockBody),
-            ['content-type' => 'json'],
+            'callback(' . json_encode($mockBody) . ')',
+            ['content-type' => 'text/html'],
             200
         );
 
@@ -126,8 +130,8 @@ class QqTest extends \PHPUnit_Framework_TestCase
         );
 
         $openIdResponse = $this->makeMockResponse(
-            json_encode($mockBody),
-            ['content-type' => 'json'],
+            'callback(' . json_encode($mockBody) . ')',
+            ['content-type' => 'text/html'],
             200
         );
 
@@ -155,8 +159,8 @@ class QqTest extends \PHPUnit_Framework_TestCase
         );
 
         $openIdResponse = $this->makeMockResponse(
-            json_encode($mockBody),
-            ['content-type' => 'json'],
+            'callback(' . json_encode($mockBody) . ')',
+            ['content-type' => 'text/html'],
             400
         );
 
@@ -218,6 +222,9 @@ class QqTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($mockUserBody['nickname'], $user->toArray()['nickname']);
         $this->assertEquals($mockUserBody['figureurl'], $user->getFigureUrl());
         $this->assertEquals($mockUserBody['figureurl'], $user->toArray()['figureurl']);
+        $this->assertNull($user->getId());
+        $this->assertNull($user->getEmail());
+        $this->assertNull($user->getName());
     }
 
     /**

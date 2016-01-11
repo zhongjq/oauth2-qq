@@ -20,7 +20,7 @@ class Qq extends AbstractProvider
 
     /**
      * OpenId
-     * 
+     *
      * @see http://wiki.open.qq.com/wiki/website/%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7OpenID_OAuth2.0
      * @var string
      */
@@ -57,11 +57,11 @@ class Qq extends AbstractProvider
      */
     public function getOpenId(AccessToken $token)
     {
-        $request = $this->getAuthenticatedRequest(self::METHOD_GET, $this->domain.'/oauth2.0/me', $token);
+        $request = $this->getAuthenticatedRequest(self::METHOD_GET, $this->domain.'/oauth2.0/me?access_token='.(string)$token);
 
         $response = $this->getResponse($request);
 
-        return $response['openid'];
+        return isset($response['openid']) ? $response['openid'] : null;
     }
 
     /**
@@ -86,8 +86,7 @@ class Qq extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        
-        return $this->domain.'oauth2.0/me?token=' . $token->getToken() . '&openid=' . $this->openId . '&oauth_consumer_key=' . $this->clientId;
+        return $this->domain.'/user/get_user_info?access_token=' . (string)$token . '&openid=' . $this->openId . '&oauth_consumer_key=' . $this->clientId;
     }
 
     /**
@@ -101,6 +100,46 @@ class Qq extends AbstractProvider
     protected function getDefaultScopes()
     {
         return ['get_user_info'];
+    }
+
+    /**
+     * Returns an authenticated PSR-7 request instance.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  null
+     * @param  null
+     * @return RequestInterface
+     */
+    public function getAuthenticatedRequest($method, $url, $token = null, array $options = null)
+    {
+        return $this->getRequestFactory()->getRequest($method, $url);
+    }
+
+    /**
+     * Parses the response according to its content-type header.
+     *
+     * @throws UnexpectedValueException
+     * @param  ResponseInterface $response
+     * @return array
+     */
+    protected function parseResponse(ResponseInterface $response)
+    {
+        $content = (string) $response->getBody();
+
+        if(strpos($content, "callback") !== false){
+            $lpos = strpos($content, "(");
+            $rpos = strrpos($content, ")");
+            $content  = substr($content, $lpos + 1, $rpos - $lpos -1);
+
+            return $this->parseJson($content);
+        } else if(strpos($content, "access_token=") !== false) {
+            $result = array();
+            parse_str($content, $result);
+            return $result;
+        } else {
+            return parent::parseResponse($response);
+        }
     }
 
     /**
@@ -121,7 +160,7 @@ class Qq extends AbstractProvider
                 $response
             );
         }
-        
+
         if (isset($data['code']) || isset($data['ret'])) {
             // fix code to ret
             $data['ret'] = isset($data['code']) ? $data['code'] : $data['ret'];
@@ -134,7 +173,7 @@ class Qq extends AbstractProvider
                 );
             }
         }
-        
+
     }
 
     /**
