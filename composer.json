@@ -1,12 +1,12 @@
 {
-    "name": "lazyboywu/oauth2-qq",
+    "name": "zhongjq/oauth2-qq",
     "description": "Qq OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
     "license": "MIT",
     "authors": [
         {
             "name": "lazyboy wu",
             "email": "lazyboy.wu@gmail.com",
-            "homepage": "https://github.com/lazyboywu"
+            "homepage": "https://github.com/zhongjq"
         }
     ],
     "keywords": [
