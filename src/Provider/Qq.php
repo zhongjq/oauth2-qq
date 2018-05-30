@@ -59,7 +59,7 @@ class Qq extends AbstractProvider
     {
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $this->domain.'/oauth2.0/me?access_token='.(string)$token);
 
-        $response = $this->getResponse($request);
+        $response = $this->getParsedResponse($request);
 
         return isset($response['openid']) ? $response['openid'] : null;
     }
